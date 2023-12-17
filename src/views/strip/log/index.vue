@@ -19,7 +19,7 @@ const options = [
 
 const tableData = ref([])
 const searchFormRef = ref(null)
-const datePick = ref('')
+// const datePick = ref('')
 const datePick2 = ref('')
 const searchData = reactive({
   airname: '',
@@ -48,7 +48,7 @@ const getTableData = () => {
     fname: searchData.airname || undefined,
     isLate: searchData.status || undefined,
     fcompany: searchData.fcompany || undefined,
-    begin: changeTimeFormat(datePick.value) || undefined,
+    // begin: changeTimeFormat(datePick.value) || undefined,
     start: changeTimeFormat((datePick2.value)[0]) || undefined,
     end: changeTimeFormat((datePick2.value)[1]) || undefined,
     // phone: searchData.phone || undefined
@@ -73,7 +73,7 @@ const handleSearch = () => {
 }
 const resetSearch = () => {
   console.log(datePick2.value)
-  datePick.value = '',
+  // datePick.value = '',
   (datePick2.value)[0] = '',
   (datePick2.value)[1] = '',
     searchFormRef.value?.resetFields()
@@ -110,9 +110,9 @@ const shortcuts = [
 const disabledDate = (time) => {
   return time.getTime() > Date.now()
 }
-onMounted(() => {
+
   getTableData()
-})
+
 
 
 </script>
@@ -146,12 +146,12 @@ onMounted(() => {
               :disabled="item.disabled" />
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <span style="margin-right: 10px;">日期 </span>
           <el-date-picker v-model="datePick" align="right" type="date" placeholder="请选择日期" :disabled-date="disabledDate"
             :shortcuts="shortcuts">
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item prop="fcompany" label="航班公司">
           <el-input v-model="searchData.fcompany" placeholder="请输入航班公司" />
         </el-form-item>

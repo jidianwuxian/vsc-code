@@ -26,6 +26,8 @@ const backLogin = () => {
 
 <template>
   <div class="login-container">
+    
+    <el-col :span="14" class="bg"><a style="display:inline-block;width:100%;height:100%" href="https://www.4399.com/flash/209197_4.htm">1</a></el-col>
     <div class="loginbox">
       <transition name="fade" mode="out-in">
         <div v-if="!pageData.isForgetPwd" class="main">
@@ -72,10 +74,16 @@ const backLogin = () => {
   height: 100%;
   width: 100%;
   min-height: 100%;
-  background: #e2effc url('@/assets/image/login-bg.jpg') no-repeat center top;
+  // background: #e2effc url('@/assets/image/login-bg.jpg') no-repeat center top;
   background-size: 100%;
-  vertical-align: middle;
+  // vertical-align: middle;
   display: flex;
+
+  .bg {
+    background: url('@/assets/logo2.png') no-repeat 60% center / 240px auto,
+      url('@/assets/ledi.jpg') no-repeat center / cover;
+    border-radius: 0 20px 20px 0;
+  }
   .login-title {
     margin-top: 40px;
     color: #000000d9;

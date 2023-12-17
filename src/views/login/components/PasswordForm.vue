@@ -75,6 +75,8 @@ if (import.meta.env.DEV) {
         placeholder="请输入密码"
         clearable
         show-password
+        @copy.native.capture.prevent=""
+        @paste.native.capture.prevent=""
       />
     </el-form-item>
     <div class="flex justify-center mt-6">

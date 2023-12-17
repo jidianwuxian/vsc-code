@@ -56,28 +56,28 @@ export default [
                 },
                 {
                   id: 22,
-                  name: '组织管理',
+                  name: '角色管理',
                   type: '菜单',
                   sort: 2,
                   authCharacter: 'organization',
                   children: [
                     {
                       id: 211,
-                      name: '组织新增',
+                      name: '角色新增',
                       type: '按钮',
                       sort: 1,
                       authCharacter: 'user_create',
                     },
                     {
                       id: 211,
-                      name: '组织修改',
+                      name: '角色修改',
                       type: '按钮',
                       sort: 2,
                       authCharacter: 'user_update',
                     },
                     {
                       id: 211,
-                      name: '组织删除',
+                      name: '角色删除',
                       type: '按钮',
                       sort: 3,
                       authCharacter: 'user_delete',
@@ -86,7 +86,7 @@ export default [
                 },
                 {
                   id: 23,
-                  name: '字典管理',
+                  name: '进程单管理',
                   type: '菜单',
                   sort: 3,
                   authCharacter: 'dictionary'
