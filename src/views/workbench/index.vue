@@ -2,16 +2,37 @@
 import axios from 'axios'
 import { StarFilled } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue';
-import { queryStrip } from '@/api/strip/stripdata.js'
-
+import { queryStrip,deleteStrip } from '@/api/strip/stripdata.js'
+import { ElMessage,ElMessageBox} from 'element-plus'
 const now = ref(new Date());
 const formattedTime = ref(now.value.toLocaleTimeString());
 const formattedDate = ref(null);
-
+const dayOfWeek=ref(null)
+function getDayOfWeek(day) {
+  switch (day) {
+    case 0:
+      return '星期日';
+    case 1:
+      return '星期一';
+    case 2:
+      return '星期二';
+    case 3:
+      return '星期三';
+    case 4:
+      return '星期四';
+    case 5:
+      return '星期五';
+    case 6:
+      return '星期六';
+    default:
+      return '';
+  }
+}
 onMounted(() => {
   setInterval(() => {
     now.value = new Date();
     formattedTime.value = now.value.toLocaleTimeString();
+    dayOfWeek.value = getDayOfWeek(now.value.getDay());
   }, 1000);
   formattedDate.value = now.value.toLocaleDateString();
   search()
@@ -24,9 +45,8 @@ const loading = ref(false)
 const getStripList = async () => {
   loading.value = true
   const res = await queryStrip()
-  ArrtableData.value = res.data.ArrtableData
-  DeptableData.value = res.data.DeptableData
-  console.log(ArrtableData.value)
+  ArrtableData.value = res.data.arrtableData.data
+  DeptableData.value = res.data.deptableData.data
   loading.value = false
 }
 getStripList()
@@ -43,6 +63,7 @@ const getAgreeShow = (index, rows, num) => {
 
 }
 const getAgreeShow2 = (index, rows, num) => {
+  console.log(index)
   if (num === 10)
     rows[0].agreeShow10 = !rows[0].agreeShow10; // 控制点击
   if (num === 20)
@@ -61,7 +82,20 @@ let descendPo = (index, rows) => {
   rows[0].strip2 = 'H' + num.toString();
 }
 const deleteRow = (index, rows) => {
-  rows.splice(index, 3);
+  // rows.splice(index, 3);
+  console.log(rows[0].id)
+  ElMessageBox.confirm(`正在删除：${rows[0].strip1}，确认删除？`, 'Warning', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    deleteStrip(rows[0].id).then(() => {
+      getStripList()
+      ElMessage.success('删除成功')
+      
+    })
+  })
+
 }
 
 const objectSpanMethod = ({ rowIndex, columnIndex }) => {
@@ -84,7 +118,6 @@ const jingangRowStyle = (row) => {
   return {
     background: '#FFF8DC',
     color: 'black',
-
   };
 }
 const ligangRowStyle = () => {
@@ -146,21 +179,21 @@ const search=() =>{
         }
       )
     }
-
+const data=ref("18L")
 
   
 </script>
 <template>
   <div style="text-align: center;">
     <p style="font-size: 32px;">{{ formattedTime }}</p>
-    <p> {{ formattedDate }}</p>
+    <p> {{ formattedDate }} {{ dayOfWeek }}</p>
   </div>
   <el-container>
-    <el-main style="padding-top:0px">     
+    <el-main style="padding-top:0px;">     
       <el-tag size="mini">进港进程单</el-tag>
       <div v-for="(item, index) in ArrtableData" :key="index">
         <el-table :data="item" :show-header="false" border :span-method="objectSpanMethod" :row-style="jingangRowStyle()"
-          :cell-style="{ padding: '0px' }" :cell-class-name="cellclass">
+          :cell-style="{ padding: '0px' }" >
           <el-table-column prop="strip1" label="1" width="180">
           </el-table-column>
           <el-table-column prop="strip2" width="75" className="large">
@@ -170,7 +203,7 @@ const search=() =>{
             <template #default="scope">
               TAX<div class="assign" @click="getAgreeShow(scope.$index, item, 1)"
                 v-bind:class="[item[0].agreeShow1 ? 'tick' : '']"></div><br>
-              R/W<select>
+              R/W<select >
                 <option></option>
                 <option>18L</option>
                 <option>36R</option>
@@ -195,7 +228,7 @@ const search=() =>{
             </template>
 
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="50">
+          <el-table-column fixed="right" label="操作" width="52">
             <template #default="scope">
               <el-button @click.native.prevent="deleteRow(scope.$index, item)" type="text" size="small"
                 v-if="scope.$index === 0">
@@ -254,7 +287,7 @@ const search=() =>{
                 v-bind:class="[item[0].agreeShow40 ? 'tick' : '']"></div><br>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="50">
+          <el-table-column fixed="right" label="操作" width="52">
             <template #default="scope">
               <el-button @click.native.prevent="deleteRow(scope.$index, item)" type="text" size="small"
                 v-if="scope.$index === 0">
@@ -304,7 +337,7 @@ const search=() =>{
   position: relative;
   float: right;
   display: inline-block;
-  width: 20px;
+  width: 25px;
   height: 20px;
   margin: 0 6px;
   border: 1px solid #e64848 !important;
@@ -319,7 +352,7 @@ const search=() =>{
   content: " ";
   position: absolute;
   display: inline-block;
-  width: 12px;
+  width: 14px;
   height: 6px;
   border-width: 0 0 2px 2px;
   overflow: hidden;

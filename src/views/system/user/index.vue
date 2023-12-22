@@ -181,7 +181,9 @@ const handleSearch = () => {
   paginationData.currentPage = 1
 }
 const resetSearch = () => {
-  searchFormRef.value?.resetFields()
+  // searchFormRef.value?.resetFields()
+  searchData.username = ''
+  searchData.tel = ''
   if (paginationData.currentPage === 1) {
     getTableData()
   }

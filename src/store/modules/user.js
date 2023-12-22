@@ -15,11 +15,13 @@ export const useUserStore = defineStore("user", () => {
   const loginRequest = (loginData) => {
     return new Promise((resolve, reject) => {
       login({
+        radio1:loginData.radio1,
         username: loginData.username,
         password: loginData.password,
         code: loginData.code
       })
         .then((res) => {
+          
           setToken(res.token)
           token.value = res.token
           resolve(true)

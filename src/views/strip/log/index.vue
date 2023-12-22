@@ -81,46 +81,27 @@ const handleSearch = () => {
 }
 const resetSearch = () => {
   // datePick.value = '',
-  (datePick2.value)[0] = '',
-  (datePick2.value)[1] = '',
-  searchFormRef.value?.resetFields()
-
+  searchData.username = '',
+  searchData.airname = '',
+  searchData.status = [],
+  searchData.fcompany = '',
+  searchData.startLocation = '',
+  searchData.endLocation = '',
+  datePick2.value = ['', ''],
+  getTableData()
 }
 
 
-// watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })
-
-
-const shortcuts = [
-  {
-    text: 'Today',
-    value: new Date(),
-  },
-  {
-    text: 'Yesterday',
-    value: () => {
-      const date = new Date()
-      date.setTime(date.getTime() - 3600 * 1000 * 24)
-      return date
-    },
-  },
-  {
-    text: 'A week ago',
-    value: () => {
-      const date = new Date()
-      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-      return date
-    },
-  },
-]
-
-const disabledDate = (time) => {
-  return time.getTime() > Date.now()
-}
+const tableRowClassName=({row, rowIndex})=> {
+        if (row.isState === 1) {
+          return 'warning-row';
+        } else { 
+          return 'success-row';
+        }}
+       
+      
 
   getTableData()
-
-
 
 </script>
 
@@ -169,13 +150,10 @@ const disabledDate = (time) => {
           <el-input v-model="searchData.endLocation" placeholder="目的地" />
         </el-form-item>
         <el-form-item>
-          
             <span style="margin-right: 10px;">日期 </span>
             <el-date-picker v-model="datePick2" type="daterange" range-separator="To" start-placeholder="开始日期"
               end-placeholder="结束日期" :size="size" />
-          
         </el-form-item>
-
         <el-form-item>
           <el-button type="primary" :icon="Search" @click="handleSearch">查询</el-button>
           <el-button :icon="Refresh" @click="resetSearch">重置</el-button>
@@ -186,7 +164,7 @@ const disabledDate = (time) => {
       <div class="toolbar-wrapper">
       </div>
       <div class="table-wrapper">
-        <el-table :data="tableData">
+        <el-table :data="tableData" :row-class-name="tableRowClassName">
           <el-table-column type="expand">
             <template #default="props">
               <el-form label-position="left" inline class="demo-table-expand">
@@ -196,33 +174,37 @@ const disabledDate = (time) => {
                 <el-form-item label="航班公司">
                   <span>{{ props.row.fcompany }}</span>
                 </el-form-item>
-                <el-form-item label="晚点原因">
+                <span v-if="props.row.isLate==1">
+                  <el-form-item label="晚点原因">
                   <span>{{ props.row.reason }}</span>
                 </el-form-item>
-                <el-form-item label="预计时间">
-                  <span>{{ props.row.planTime }}</span>
-                </el-form-item>
+                </span>
+                
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column prop="fname" min-width="120" label="航班名称" align="center" />
-          <el-table-column prop="username" min-width="120" label="管制员名称" align="center" />
-          <el-table-column prop="isLate" min-width="150" label="状态" align="center">
+          <el-table-column prop="fname" min-width="100" label="航班名称" align="center" />
+          <el-table-column prop="username" min-width="100" label="管制员名称" align="center" />
+          <el-table-column prop="isLate" min-width="80" label="状态" align="center">
             <template #default="scope">
               <el-tag v-if="scope.row.isLate==0" type="success" effect="plain">准点</el-tag>
-              <el-tag v-if="scope.row.isLate==1" type="danger" effect="plain">晚点</el-tag>
+              <el-tag v-if="scope.row.isLate==1" type="danger" effect="plain">延误</el-tag>
               <el-tag v-if="scope.row.isLate==2" type="info" effect="plain">取消</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="isState" min-width="150" label="操作信息" align="center">
+          <!-- <el-table-column prop="isState" min-width="150" label="操作信息" align="center">
             <template #default="scope">
               <span v-if="scope.row.isState">降落</span>
               <span v-else>起飞</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="起始地" prop="startLocation" min-width="" align="center"/>
           <el-table-column label="目的地" prop="endLocation" min-width="" align="center"/>
-          <el-table-column prop="factTime" min-width="160" label="移交时间" align="center" />
+          <el-table-column prop="upplanTime" min-width="120" label="预计起飞时间" align="center" />
+          <el-table-column prop="upfactTime" min-width="120" label="实际起飞时间" align="center" />
+          <el-table-column prop="downplanTime" min-width="120" label="预计降落时间" align="center" />
+          <el-table-column prop="downfactTime" min-width="120" label="实际降落时间" align="center" />
+          <!-- <el-table-column prop="opeTime" min-width="160" label="移交时间" align="center" /> -->
         </el-table>
       </div>
     </div>
@@ -230,7 +212,7 @@ const disabledDate = (time) => {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .app-container {
   height: 100%;
   overflow-x: hidden;
@@ -250,5 +232,16 @@ const disabledDate = (time) => {
 
 .table-wrapper {
   margin-bottom: 20px;
+}
+
+.el-table .warning-row {
+    background: rgb(171, 171, 238);
+  }
+
+  .el-table .success-row {
+    background: rgb(242, 242, 153);
+  }
+.el-table .cancel-row{
+  background: rgb(182, 181, 181);
 }
 </style>

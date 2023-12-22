@@ -55,7 +55,8 @@ const toggleDark = useToggle(isDark)
       <Screenfull v-if="showScreenfull" class="right-menu-item" />
       <el-dropdown class="right-menu-item">
         <div>
-          <el-avatar :icon="UserFilled" :size="26" />
+          <!-- <el-avatar :icon="UserFilled" :size="26" /> -->
+          111
         </div>
         <template #dropdown>
           <el-dropdown-menu>

@@ -2,6 +2,7 @@
 import { useUserStore } from '@/store/modules/user'
 import { User, Lock } from '@element-plus/icons-vue'
 
+
 // 获取router变量
 const vueRouter = useRouter()
 // 获取store变量
@@ -11,6 +12,7 @@ const loginFormRef = ref()
 
 // 定义表单对象
 const loginFormModel = reactive({
+  radio1:'2',
   username: '',
   password: '',
   code: '',
@@ -36,7 +38,7 @@ const submitForm = (formEl) => {
       userStore
         .loginRequest(loginFormModel)
         .then(() => {
-          vueRouter.push({ path: '/workbench' }).catch(() => {})
+          vueRouter.push({ path: '/workbench' }).catch(() => { })
         })
         .catch(() => {
           loginFormModel.loginButtonDisabled = false
@@ -59,33 +61,25 @@ if (import.meta.env.DEV) {
 
 <template>
   <el-form ref="loginFormRef" :model="loginFormModel" :rules="loginFormRules">
+    <el-form-item prop="radio1">
+      <el-radio-group v-model="loginFormModel.radio1">
+        <el-radio label="1" size="middle" border>塔台管制员</el-radio>
+        <el-radio label="2" size="middle" border>管制经理</el-radio>
+        <el-radio label="3" size="middle" border>管理员</el-radio>
+      </el-radio-group>
+    </el-form-item>
+      
+    
     <el-form-item prop="username">
-      <el-input
-        v-model="loginFormModel.username"
-        :prefix-icon="User"
-        placeholder="请输入用户名/手机号/邮箱/身份证"
-        clearable
-      />
+      <el-input v-model="loginFormModel.username" :prefix-icon="User" placeholder="请输入用户名/手机号/邮箱/身份证" clearable />
     </el-form-item>
     <el-form-item prop="password">
-      <el-input
-        v-model="loginFormModel.password"
-        type="password"
-        :prefix-icon="Lock"
-        placeholder="请输入密码"
-        clearable
-        show-password
-        @copy.native.capture.prevent=""
-        @paste.native.capture.prevent=""
-      />
+      <el-input v-model="loginFormModel.password" type="password" :prefix-icon="Lock" placeholder="请输入密码" clearable
+        show-password @copy.native.capture.prevent="" @paste.native.capture.prevent="" />
     </el-form-item>
     <div class="flex justify-center mt-6">
-      <el-button
-        type="primary"
-        @click="submitForm(loginFormRef)"
-        :disabled="loginFormModel.loginButtonDisabled"
-        :loading="loginFormModel.loginButtonLoading"
-      >
+      <el-button type="primary" @click="submitForm(loginFormRef)" :disabled="loginFormModel.loginButtonDisabled"
+        :loading="loginFormModel.loginButtonLoading">
         {{ loginFormModel.loginButtonName }}
       </el-button>
     </div>

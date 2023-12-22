@@ -10,18 +10,16 @@ export default [
         data: {
           ArrtableData: {
             data1:
-              [{
+               [{
                 strip1: 'CYH4183',
-                strip2: 'H360',
-                strip3: 'P/B',
-                agreeShow1: false,		
+                strip2: 'H360',	
                 strip4: '01/28  1500',
-                switch10: 1,
-                agreeShow10: false,
-                agreeShow20: false,
-                agreeShow30: false,
-                agreeShow40: false,
-    
+                agreeShow10:true,
+                agreeShow20:true,
+                agreeShow30:true,
+                agreeShow40:true,
+                agreeShow1:true
+
               }, {
                 strip1: 'B737 M A2230',
                 strip4: 'K1',
@@ -33,11 +31,12 @@ export default [
               [{
                 strip1: 'ZH9521',
                 strip2: 'H360',
-                strip3: 'P/B',
-                agreeShow1: false,
-    
                 strip4: '01/28  1500',
-                agreeShow: true,
+                agreeShow10:false,
+                agreeShow20:false,
+                agreeShow30:false,
+                agreeShow40:false,
+                agreeShow1:false
               }, {
                 strip1: 'B737 M A2230',
                 strip4: 'K1',
@@ -50,10 +49,13 @@ export default [
                 strip1: 'ZH9522',
                 strip2: 'H360',
                 strip3: 'P/B',
-                agreeShow1: false,
-    
                 strip4: '01/28  1500',
-                agreeShow: true,
+                agreeShow10:false,
+                agreeShow20:false,
+                agreeShow30:false,
+                agreeShow40:false,
+                agreeShow1:false,
+    
               }, {
                 strip1: 'B737 M A2230',
                 strip4: 'K1',
@@ -68,16 +70,14 @@ export default [
               [{
                 strip1: 'CRK305',
                 strip2: 'H0',
-                strip3: 'P/B',
+                strip4: '01/28  1500',
                 agreeShow1: false,
                 agreeShow2: false,
                 agreeShow3: false,
-                strip4: '01/28  1500',
                 agreeShow10: false,
                 agreeShow20: false,
                 agreeShow30: false,
                 agreeShow40: false,
-                agreeShow: true,
               }, {
                 strip1: 'A333 H 0100',
                 strip4: 'K1',
@@ -89,12 +89,14 @@ export default [
               [{
                 strip1: 'CYH4183',
                 strip2: 'H0',
-                strip3: 'P/B',
+                strip4: '01/28  1500',
                 agreeShow1: false,
                 agreeShow2: false,
                 agreeShow3: false,
-                strip4: '01/28  1500',
-                agreeShow: true,
+                agreeShow10: false,
+                agreeShow20: false,
+                agreeShow30: false,
+                agreeShow40: false,
               }, {
                 strip1: 'B737 M A2230',
                 strip4: 'K1',
@@ -106,12 +108,14 @@ export default [
               [{
                 strip1: '9H8371',
                 strip2: 'H0',
-                strip3: 'P/B',
+                strip4: '01/28  1500',
                 agreeShow1: false,
                 agreeShow2: false,
                 agreeShow3: false,
-                strip4: '01/28  1500',
-                agreeShow: true,
+                agreeShow10: false,
+                agreeShow20: false,
+                agreeShow30: false,
+                agreeShow40: false,
               }, {
                 strip1: 'B737 M A2230',
                 strip4: 'K1',
