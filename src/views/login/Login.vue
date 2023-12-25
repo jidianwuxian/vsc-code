@@ -25,13 +25,13 @@ const backLogin = () => {
 </script>
 
 <template>
-  <div class="login-container">
-    
-    <el-col :span="12" class="bg"><a style="display:inline-block;width:100%;height:100%" href="https://www.4399.com/flash/209197_4.htm">1</a></el-col>
+  <div class="login-container" >
+    <el-col :span="15">
+    </el-col>
     <div class="loginbox">
       <transition name="fade" mode="out-in">
         <div v-if="!pageData.isForgetPwd" class="main">
-          <div class="login-title">塔台管制登录</div>
+          <div class="login-title">登录入口</div>
           <el-tabs v-model="pageData.loginActiveTab" class="mt-3">
             <el-tab-pane label="密码登录" name="password"></el-tab-pane>
             <el-tab-pane label="免密登录" name="sms"></el-tab-pane>
@@ -78,10 +78,9 @@ const backLogin = () => {
   background-size: 100%;
   // vertical-align: middle;
   display: flex;
-
+  background: url('') no-repeat 60% center / 240px auto,
+      url('@/assets/stripPho.png') no-repeat center / cover;
   .bg {
-    background: url('') no-repeat 60% center / 240px auto,
-      url('@/assets/ans.png') no-repeat center / cover;
     border-radius: 0 20px 20px 0;
   }
   .login-title {
@@ -98,9 +97,10 @@ const backLogin = () => {
     width: 445px;
     height: 500px;
     margin: auto;
-    background: #ffffff;
+    background: #efefed;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
+    border-radius: 15px;
+    opacity: 0.8;
   }
   .main {
     width: 445px;

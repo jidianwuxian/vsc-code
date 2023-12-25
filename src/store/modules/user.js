@@ -7,7 +7,7 @@ import { login, getInfo } from '@/api/user'
 export const useUserStore = defineStore("user", () => {
   const token = ref(getToken() || "")
   const roles = ref([])
-
+  const name = ref("")
   const setRoles = (value) => {
     roles.value = value
   }
@@ -21,9 +21,9 @@ export const useUserStore = defineStore("user", () => {
         code: loginData.code
       })
         .then((res) => {
-          
           setToken(res.token)
           token.value = res.token
+          name.value = res.data.name
           resolve(true)
         })
         .catch((error) => {
@@ -61,6 +61,7 @@ export const useUserStore = defineStore("user", () => {
   const logout = () => {
     removeToken()
     token.value = ""
+    name.value=""
     roles.value = []
     resetRouter()
   }
@@ -71,8 +72,25 @@ export const useUserStore = defineStore("user", () => {
     roles.value = []
   }
 
-  return { token, roles, setRoles, loginRequest, queryUserInfo, changeRoles, logout, resetToken }
-})
+  return { token, roles,name,setRoles, loginRequest, queryUserInfo, changeRoles, logout, resetToken }
+},
+// {
+//   persist: {
+//     enabled: true,
+//     strategies: [
+//       {
+//         // 自定义存储的 key，默认是 defineStore 的第一个参数，即 store.id
+//         key: "local",
+//         // 可以指定任何 extends Storage 的实例，默认是 sessionStorage
+//         storage: localStorage,
+//         // state 中的字段名，按组打包储存
+//         paths: ["name"],
+//       },
+//     ],
+//   },
+// }
+
+)
 
 export function useUserStoreHook() {
   return useUserStore(store)

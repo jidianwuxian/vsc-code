@@ -45,8 +45,7 @@ const changeTimeFormat = (date1) => {
 }
 const getTableData = () => {
   loading.value = true
-  console.log((datePick2.value)[0])
-  console.log(datePick2.value)
+ 
   queryLog({
     // currentPage: paginationData.currentPage,
     // size: paginationData.pageSize,
@@ -187,9 +186,9 @@ const tableRowClassName=({row, rowIndex})=> {
           <el-table-column prop="username" min-width="100" label="管制员名称" align="center" />
           <el-table-column prop="isLate" min-width="80" label="状态" align="center">
             <template #default="scope">
-              <el-tag v-if="scope.row.isLate==0" type="success" effect="plain">准点</el-tag>
+              <el-tag v-if="scope.row.isLate==2" type="success" effect="plain">准点</el-tag>
               <el-tag v-if="scope.row.isLate==1" type="danger" effect="plain">延误</el-tag>
-              <el-tag v-if="scope.row.isLate==2" type="info" effect="plain">取消</el-tag>
+              <el-tag v-if="scope.row.isLate==0" type="info" effect="plain">取消</el-tag>
             </template>
           </el-table-column>
           <!-- <el-table-column prop="isState" min-width="150" label="操作信息" align="center">

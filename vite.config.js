@@ -21,9 +21,9 @@ export default defineConfig(({ command, mode }) => {
       open: true,
       proxy: {
         '/dev_api/': {
-          target: 'http://10.68.130.83:8080',
+          // target: 'http://10.68.130.83:8080',
           // target: 'http://localhost:8080',
-          // target: 'http://192.168.1.108:8800',
+          target: 'http://192.168.1.109:8800',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dev_api/, '')
         }

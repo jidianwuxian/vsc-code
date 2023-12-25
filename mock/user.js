@@ -35,19 +35,19 @@ export default [
       }
     }
   },
-  {
-    url: '/dev_api/login',
-    method: 'post',
-    response: ({ body }) => {
-      console.log('body>>>>>>>>', body)
-      return {
-        msg: '操作成功',
-        code: 200,
-        token:
-          'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImQ5YTc5Yzg2LWQzMjQtNDBjZC05ZDVlLTY3OTM0ZGMwMjlkNyJ9.LeRqxR1S9BK6lHCGWNGeuvM0gDqgDICvemPX8JM9WtE6_c6IUaPlyvBq_GETwwPQAhO7IxuDvAHhhQzM7CVHeg'
-      }
-    }
-  },
+  // {
+  //   url: '/dev_api/login',
+  //   method: 'post',
+  //   response: ({ body }) => {
+  //     console.log('body>>>>>>>>', body)
+  //     return {
+  //       msg: '操作成功',
+  //       code: 200,
+  //       token:
+  //         'eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6ImQ5YTc5Yzg2LWQzMjQtNDBjZC05ZDVlLTY3OTM0ZGMwMjlkNyJ9.LeRqxR1S9BK6lHCGWNGeuvM0gDqgDICvemPX8JM9WtE6_c6IUaPlyvBq_GETwwPQAhO7IxuDvAHhhQzM7CVHeg'
+  //     }
+  //   }
+  // },
   {
     url: '/dev_api/logout',
     method: 'post',

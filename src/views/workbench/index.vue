@@ -2,12 +2,12 @@
 import axios from 'axios'
 import { StarFilled } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue';
-import { queryStrip,deleteStrip } from '@/api/strip/stripdata.js'
-import { ElMessage,ElMessageBox} from 'element-plus'
+import { queryStrip, deleteStrip, descLevel, ascLevel, changeState, changeState2,cancleStrip } from '@/api/strip/stripdata.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
 const now = ref(new Date());
 const formattedTime = ref(now.value.toLocaleTimeString());
 const formattedDate = ref(null);
-const dayOfWeek=ref(null)
+const dayOfWeek = ref(null)
 function getDayOfWeek(day) {
   switch (day) {
     case 0:
@@ -53,17 +53,13 @@ getStripList()
 
 
 
-const getAgreeShow = (index, rows, num) => {
+const getAgreeShow2 = (index, rows, num) => {
   if (num === 1)
     rows[0].agreeShow1 = !rows[0].agreeShow1; // 控制点击
   if (num === 2)
     rows[0].agreeShow2 = !rows[0].agreeShow2;
   if (num === 3)
     rows[0].agreeShow3 = !rows[0].agreeShow3;
-
-}
-const getAgreeShow2 = (index, rows, num) => {
-  console.log(index)
   if (num === 10)
     rows[0].agreeShow10 = !rows[0].agreeShow10; // 控制点击
   if (num === 20)
@@ -72,31 +68,104 @@ const getAgreeShow2 = (index, rows, num) => {
     rows[0].agreeShow30 = !rows[0].agreeShow30;
   if (num === 40)
     rows[0].agreeShow40 = !rows[0].agreeShow40;
-}
-let ascendPo = (index, rows) => {
-  let num = parseInt(rows[0].strip2.slice(1)) + 30;
-  rows[0].strip2 = 'H' + num.toString();
-}
-let descendPo = (index, rows) => {
-  let num = parseInt(rows[0].strip2.slice(1)) - 30;
-  rows[0].strip2 = 'H' + num.toString();
-}
-const deleteRow = (index, rows) => {
-  // rows.splice(index, 3);
-  console.log(rows[0].id)
-  ElMessageBox.confirm(`正在删除：${rows[0].strip1}，确认删除？`, 'Warning', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  }).then(() => {
-    deleteStrip(rows[0].id).then(() => {
-      getStripList()
-      ElMessage.success('删除成功')
-      
-    })
-  })
+  changeState(
+    {
+      id: rows[0].id,
+      agreeShow1: rows[0].agreeShow1,
+      agreeShow2: rows[0].agreeShow2,
+      agreeShow3: rows[0].agreeShow3,
+      agreeShow10: rows[0].agreeShow10,
+      agreeShow20: rows[0].agreeShow20,
+      agreeShow30: rows[0].agreeShow30,
+      agreeShow40: rows[0].agreeShow40,
+    }
+  )
 
 }
+
+const getAgreeShow = (index, rows, num) => {
+  if (num === 1)
+    rows[0].agreeShow1 = !rows[0].agreeShow1; // 控制点击
+  if (num === 2)
+    rows[0].agreeShow2 = !rows[0].agreeShow2;
+  if (num === 3)
+    rows[0].agreeShow3 = !rows[0].agreeShow3;
+  if (num === 10)
+    rows[0].agreeShow10 = !rows[0].agreeShow10; // 控制点击
+  if (num === 20)
+    rows[0].agreeShow20 = !rows[0].agreeShow20;
+  if (num === 30)
+    rows[0].agreeShow30 = !rows[0].agreeShow30;
+  if (num === 40)
+    rows[0].agreeShow40 = !rows[0].agreeShow40;
+  changeState2(
+    {
+      id: rows[0].id,
+      agreeShow1: rows[0].agreeShow1,
+      agreeShow2: rows[0].agreeShow2,
+      agreeShow3: rows[0].agreeShow3,
+      agreeShow10: rows[0].agreeShow10,
+      agreeShow20: rows[0].agreeShow20,
+      agreeShow30: rows[0].agreeShow30,
+      agreeShow40: rows[0].agreeShow40,
+    }
+  )
+
+}
+let ascendPo = (index, rows) => {
+  ascLevel(rows[0].id).then(() => {
+    getStripList()
+  })
+}
+let descendPo = (index, rows) => {
+  descLevel(rows[0].id).then(() => {
+    getStripList()
+  })
+}
+const title = ref('')
+const id = ref('')
+const submitReason = (index, rows, name) => {
+  isCancle.value = false
+  dialogFormVisible.value = true
+  title.value = name
+  id.value = rows[0].id
+}
+const submitReason2 = () => {
+  if(isCancle.value==true){
+    cancleReason2()
+    return 
+  }
+  deleteStrip({
+    id:id.value, 
+    reason:form.reason
+  }).then(() => {
+    dialogFormVisible.value = false
+    form.reason = ''
+    getStripList()
+    ElMessage.success('删除成功')
+  })
+}
+const isCancle=ref(false)
+const cancleReason = (index, rows, name) => {
+  dialogFormVisible.value = true
+  isCancle.value = true
+  title.value = name
+  id.value = rows[0].id
+}
+const cancleReason2 = () => {
+  cancleStrip({
+    id:id.value, 
+    reason:form.reason
+  }).then(
+    () => {
+      dialogFormVisible.value = false
+      form.reason = ''
+      getStripList()
+      ElMessage.success('取消成功')
+    }
+  )
+}
+
 
 const objectSpanMethod = ({ rowIndex, columnIndex }) => {
   if (columnIndex === 1 || columnIndex === 2 || columnIndex === 4) {
@@ -127,61 +196,64 @@ const ligangRowStyle = () => {
   };
 }
 
-const search=() =>{
-      //必须输入城市的名字 如果为空 不做任何反馈
-      if (cityName.value.trim() === '') {
-        return
-      }
-      //发送ajax请求 根据城市的名字获取维度和经度
-      const apiKey = "4c72b247ee4d9a725d048dfc25f0fb09"
-      // const apiKey = "   78b262ed7919f0d79a2ca50a4a6f82bf"
+const search = () => {
+  //必须输入城市的名字 如果为空 不做任何反馈
+  if (cityName.value.trim() === '') {
+    return
+  }
+  //发送ajax请求 根据城市的名字获取维度和经度
+  const apiKey = "4c72b247ee4d9a725d048dfc25f0fb09"
+  // const apiKey = "   78b262ed7919f0d79a2ca50a4a6f82bf"
 
-      const apiUrlGetLatAndLon = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName.value}&appid=${apiKey}`
-      axios.get(apiUrlGetLatAndLon).then(
+  const apiUrlGetLatAndLon = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName.value}&appid=${apiKey}`
+  axios.get(apiUrlGetLatAndLon).then(
+    response => {
+      console.log("响应数据：", response.data)
+
+      //获取维度和经度
+      const lat = response.data[0].lat
+      const lon = response.data[0].lon
+      console.log("维度和经度：", lat, lon)
+      //在发送ajax请求 调用接口 根据维度和经度获取天气信息
+      const apiUrlGetWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      axios.get(apiUrlGetWeather).then(
         response => {
           console.log("响应数据：", response.data)
-
-          //获取维度和经度
-          const lat = response.data[0].lat
-          const lon = response.data[0].lon
-          console.log("维度和经度：", lat, lon)
-          //在发送ajax请求 调用接口 根据维度和经度获取天气信息
-          const apiUrlGetWeather = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
-          axios.get(apiUrlGetWeather).then(
-            response => {
-              console.log("响应数据：", response.data)
-              //从响应的数据当中获取我们想要的信息 温度 适度 风俗 天气图标
-              const weathera = {
-                imgPath: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
-                temp: response.data.main.temp,
-                windSpeed: response.data.wind.speed,
-                windDirection: response.data.wind.deg,
-                humidity: response.data.main.humidity,
-                pressure: response.data.main.pressure,
-                visibility: response.data.visibility,
-                clouds:response.data.clouds.all,
-                description: response.data.weather[0].description,
-                city: cityName.value,
-              }
-              // console.log("天气信息：", weather)
-              //触发事件使用全局事件总线 传递数据
-              weather.value = weathera
-              console.log(weather.value)
-            },
-            error => {
-              console.group("错误信息为：", error.message)
-            }
-
-          )
+          //从响应的数据当中获取我们想要的信息 温度 适度 风俗 天气图标
+          const weathera = {
+            imgPath: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+            temp: response.data.main.temp,
+            windSpeed: response.data.wind.speed,
+            windDirection: response.data.wind.deg,
+            humidity: response.data.main.humidity,
+            pressure: response.data.main.pressure,
+            visibility: response.data.visibility,
+            clouds: response.data.clouds.all,
+            description: response.data.weather[0].description,
+            city: cityName.value,
+          }
+          // console.log("天气信息：", weather)
+          //触发事件使用全局事件总线 传递数据
+          weather.value = weathera
+          console.log(weather.value)
         },
         error => {
-          console.log("错误信息为：", error.message)
+          console.group("错误信息为：", error.message)
         }
-      )
-    }
-const data=ref("18L")
 
-  
+      )
+    },
+    error => {
+      console.log("错误信息为：", error.message)
+    }
+  )
+}
+const form = reactive({
+  reason: '',
+})
+const dialogFormVisible = ref(false)
+const formLabelWidth = '140px'
+
 </script>
 <template>
   <div style="text-align: center;">
@@ -189,67 +261,70 @@ const data=ref("18L")
     <p> {{ formattedDate }} {{ dayOfWeek }}</p>
   </div>
   <el-container>
-    <el-main style="padding-top:0px;">     
+    <el-main style="padding-top:0px;">
       <el-tag size="mini">进港进程单</el-tag>
-      <div v-for="(item, index) in ArrtableData" :key="index">
-        <el-table :data="item" :show-header="false" border :span-method="objectSpanMethod" :row-style="jingangRowStyle()"
-          :cell-style="{ padding: '0px' }" >
-          <el-table-column prop="strip1" label="1" width="180">
-          </el-table-column>
-          <el-table-column prop="strip2" width="75" className="large">
-          </el-table-column>
-          <el-table-column prop="strip3" width="120">
-            <!-- TAX<br>R/W -->
-            <template #default="scope">
-              TAX<div class="assign" @click="getAgreeShow(scope.$index, item, 1)"
-                v-bind:class="[item[0].agreeShow1 ? 'tick' : '']"></div><br>
-              R/W<select >
-                <option></option>
-                <option>18L</option>
-                <option>36R</option>
-              </select>
-            </template>
+      <el-scrollbar height="470px">
+        <div v-for="(item, index) in ArrtableData" :key="index" class="scrollbar-demo-item">
+          <el-table :data="item" :show-header="false" border :span-method="objectSpanMethod"
+            :row-style="jingangRowStyle()" :cell-style="{ padding: '0px' }">
+            <el-table-column prop="strip1" label="1" width="180">
+            </el-table-column>
+            <el-table-column prop="strip2" width="75" className="large">
+            </el-table-column>
+            <el-table-column prop="strip3" width="120">
+              <!-- TAX<br>R/W -->
+              <template #default="scope">
+                TAX<div class="assign" @click="getAgreeShow2(scope.$index, item, 1)"
+                  v-bind:class="[item[0].agreeShow1 ? 'tick' : '']"></div><br>
+                R/W<select>
+                  <option></option>
+                  <option>18L</option>
+                  <option>36R</option>
+                </select>
+              </template>
 
 
 
-          </el-table-column>
-          <el-table-column prop="strip4" width="110">
-          </el-table-column>
-          <el-table-column prop="strip5" width="80">
-            <template #default="scope">
-              M<div class="assign" @click="getAgreeShow2(scope.$index, item, 10)"
-                v-bind:class="[item[0].agreeShow10 ? 'tick' : '']"></div><br>
-              E<div class="assign" @click="getAgreeShow2(scope.$index, item, 20)"
-                v-bind:class="[item[0].agreeShow20 ? 'tick' : '']"></div><br>
-              A<div class="assign" @click="getAgreeShow2(scope.$index, item, 30)"
-                v-bind:class="[item[0].agreeShow30 ? 'tick' : '']"></div><br>
-              I<div class="assign" @click="getAgreeShow2(scope.$index, item, 40)"
-                v-bind:class="[item[0].agreeShow40 ? 'tick' : '']"></div><br>
-            </template>
+            </el-table-column>
+            <el-table-column prop="strip4" width="110">
+            </el-table-column>
+            <el-table-column prop="strip5" width="80">
+              <template #default="scope">
+                M<div class="assign" @click="getAgreeShow2(scope.$index, item, 10)"
+                  v-bind:class="[item[0].agreeShow10 ? 'tick' : '']"></div><br>
+                E<div class="assign" @click="getAgreeShow2(scope.$index, item, 20)"
+                  v-bind:class="[item[0].agreeShow20 ? 'tick' : '']"></div><br>
+                A<div class="assign" @click="getAgreeShow2(scope.$index, item, 30)"
+                  v-bind:class="[item[0].agreeShow30 ? 'tick' : '']"></div><br>
+                I<div class="assign" @click="getAgreeShow2(scope.$index, item, 40)"
+                  v-bind:class="[item[0].agreeShow40 ? 'tick' : '']"></div><br>
+              </template>
 
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="52">
-            <template #default="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, item)" type="text" size="small"
-                v-if="scope.$index === 0">
-                移交
-              </el-button>
-              <el-button @click.native.prevent="descendPo(scope.$index, item)" type="text" size="small"
-                v-if="scope.$index === 2">
-                下降
-              </el-button>
-              <el-button type="text" size="small" v-if="scope.$index === 1">
-                操作
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="52">
+              <template #default="scope">
+                <el-button @click.native.prevent="submitReason(scope.$index, item, item[0].strip1)" type="text"
+                  size="small" v-if="scope.$index === 0">
+                  移交
+                </el-button>
+                <el-button @click.native.prevent="descendPo(scope.$index, item)" type="text" size="small"
+                  v-if="scope.$index === 2">
+                  下降
+                </el-button>
+                <el-button @click.native.prevent="cancleReason(scope.$index, item,item[0].strip1)" type="text" size="small" v-if="scope.$index === 1">
+                  取消
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-scrollbar>
+
     </el-main>
     <el-main style="padding-top:0px">
       <el-tag size="mini">离港进程单</el-tag>
-
-      <div v-for="(item, index) in DeptableData" :key="index">
+      <el-scrollbar height="470px">
+        <div v-for="(item, index) in DeptableData" :key="index">
         <el-table :data="item" :show-header="false" border :span-method="objectSpanMethod" :row-style="ligangRowStyle()"
           :cell-style="{ padding: '0px' }">
           <el-table-column prop="strip1" label="1" width="180">
@@ -277,19 +352,19 @@ const data=ref("18L")
           </el-table-column>
           <el-table-column prop="strip5" width="80">
             <template #default="scope">
-              M<div class="assign" @click="getAgreeShow2(scope.$index, item, 10)"
+              M<div class="assign" @click="getAgreeShow(scope.$index, item, 10)"
                 v-bind:class="[item[0].agreeShow10 ? 'tick' : '']"></div><br>
-              E<div class="assign" @click="getAgreeShow2(scope.$index, item, 20)"
+              E<div class="assign" @click="getAgreeShow(scope.$index, item, 20)"
                 v-bind:class="[item[0].agreeShow20 ? 'tick' : '']"></div><br>
-              A<div class="assign" @click="getAgreeShow2(scope.$index, item, 30)"
+              A<div class="assign" @click="getAgreeShow(scope.$index, item, 30)"
                 v-bind:class="[item[0].agreeShow30 ? 'tick' : '']"></div><br>
-              I<div class="assign" @click="getAgreeShow2(scope.$index, item, 40)"
+              I<div class="assign" @click="getAgreeShow(scope.$index, item, 40)"
                 v-bind:class="[item[0].agreeShow40 ? 'tick' : '']"></div><br>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="52">
             <template #default="scope">
-              <el-button @click.native.prevent="deleteRow(scope.$index, item)" type="text" size="small"
+              <el-button @click.native.prevent="submitReason(scope.$index, item,item[0].strip1)" type="text" size="small"
                 v-if="scope.$index === 0">
                 移交
               </el-button>
@@ -297,13 +372,15 @@ const data=ref("18L")
                 v-if="scope.$index === 2">
                 上升
               </el-button>
-              <el-button type="text" size="small" v-if="scope.$index === 1">
-                操作
+              <el-button @click.native.prevent="cancleReason(scope.$index, item,item[0].strip1)" type="text" size="small" v-if="scope.$index === 1">
+                取消
               </el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
+      </el-scrollbar>
+      
     </el-main>
   </el-container>
   <el-divider><el-icon><star-filled /></el-icon></el-divider>
@@ -314,14 +391,34 @@ const data=ref("18L")
           <span>天气信息</span>
         </span>
       </template>
-      当前城市：{{ weather.city }} <el-divider direction="vertical" /> 气温：{{ weather.temp }}°C 
-      <el-divider direction="vertical" />湿度(百分比)：{{ weather.humidity }} <el-divider direction="vertical" />风速(米/秒)：{{ weather.windSpeed }} 
-      <el-divider direction="vertical" />风向：{{ weather.windDirection }} <el-divider direction="vertical" />气压(hPa)：{{ weather.pressure }}
-      <el-divider direction="vertical" />可见度(米)：{{ weather.visibility }}<el-divider direction="vertical" />天气描述信息：{{ weather.description }}
+      当前城市：{{ weather.city }} <el-divider direction="vertical" /> 气温：{{ weather.temp }}°C
+      <el-divider direction="vertical" />湿度(百分比)：{{ weather.humidity }} <el-divider direction="vertical" />风速(米/秒)：{{
+        weather.windSpeed }}
+      <el-divider direction="vertical" />风向：{{ weather.windDirection }} <el-divider direction="vertical" />气压(hPa)：{{
+        weather.pressure }}
+      <el-divider direction="vertical" />可见度(米)：{{ weather.visibility }}<el-divider direction="vertical" />天气描述信息：{{
+        weather.description }}
       <img :src="weather.imgPath" style="display: inline-block;vertical-align: middle;">
     </el-tab-pane>
     <el-tab-pane label="本场流控信息">111</el-tab-pane>
   </el-tabs>
+
+
+  <el-dialog v-model="dialogFormVisible" :title="title">
+    <el-form :model="form">
+      <el-form-item label="原因" :label-width="formLabelWidth">
+        <el-input v-model="form.reason" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="submitReason2">
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <style>
@@ -366,25 +463,42 @@ const data=ref("18L")
 
 .large {
   font-size: 20px;
-  /* 设置字体大小为 14 像素 */
 }
 
-/* .bgcChange {
-  filter: invert(1) hue-rotate(180deg);
-} */
 img {
   width: 50px;
   height: 50px
 }
-.demo-tabs > .el-tabs__content {
+
+.demo-tabs>.el-tabs__content {
   padding: 32px;
   color: #6b778c;
 }
+
 .demo-tabs .custom-tabs-label .el-icon {
   vertical-align: middle;
 }
+
 .demo-tabs .custom-tabs-label span {
   vertical-align: middle;
   margin-left: 4px;
 }
+
+.el-button--text {
+  margin-right: 15px;
+}
+
+.el-select {
+  width: 300px;
+}
+
+.el-input {
+  width: 300px;
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
+
+
 </style>

@@ -8,7 +8,7 @@ import Hamburger from '../Hamburger/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import { useDark, useToggle } from '@vueuse/core'
 import { Sunny, Moon } from '@element-plus/icons-vue'
-
+// const name=ref(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")):{})
 const router = useRouter()
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
@@ -29,6 +29,7 @@ const toggleSidebar = () => {
 }
 const logout = () => {
   userStore.logout()
+  // localStorage.removeItem('name')
   router.push('/login')
 }
 
@@ -56,7 +57,7 @@ const toggleDark = useToggle(isDark)
       <el-dropdown class="right-menu-item">
         <div>
           <!-- <el-avatar :icon="UserFilled" :size="26" /> -->
-          111
+          {{ userStore.name }}11
         </div>
         <template #dropdown>
           <el-dropdown-menu>
